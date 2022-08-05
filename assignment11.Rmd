@@ -1,0 +1,52 @@
+---
+title: "Assignment 11"
+author: "Sunehera Hasib"
+date: "`r Sys.Date()`"
+output: flexdashboard::flex_dashboard
+---
+
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(plotly)
+library(crosstalk)
+pokemon <- read_csv("pokemon.csv")
+shared_pokemon <- SharedData$new(pokemon)
+```
+
+Column
+-------------------------------------
+ 
+### Boxplot distribution of Pokemon 'Total' stat vs 'Type 1'
+ 
+```{r,  echo = FALSE}
+p2 <- shared_pokemon %>%
+  ggplot() +
+  geom_boxplot(mapping = aes(x= reorder(`Type 1`, Total, FUN=median),  y = Total, fill = `Type 1` )) +
+  labs(x = " Type 1 of Pokemons") +
+  theme(axis.text.x = element_text(angle = 45))
+
+ggplotly(p2)
+```
+ 
+Column
+-------------------------------------
+ 
+### Scatter plot distribution of 'Attack' vs 'Defense' of Pokemons
+ 
+```{r, echo=FALSE}
+p <- shared_pokemon %>%
+  ggplot() +
+  geom_point(mapping = aes(x= Defense, y = Attack, color = `Type 1`)) 
+
+ggplotly(p)
+```
+
+
+
+SidebarName {.sidebar}
+----------------------
+```{r}
+filter_select("poke_type", "Pokemon Type", shared_pokemon, ~`Type 1`)
+```
+
